@@ -17,6 +17,9 @@ struct MainView: View {
     @State private var showingAddItem = false
     @State private var editingItem: Item?
     
+    @State private var showSettings = false
+    @State private var showAbout = false
+    
     var body: some View {
         if sizeClass == .compact {
             iPhoneLayout
@@ -25,6 +28,7 @@ struct MainView: View {
         }
     }
     
+    // MARK: - iPhone
     private var iPhoneLayout: some View {
         NavigationStack {
             HomeScreen(
@@ -44,6 +48,11 @@ struct MainView: View {
                     }
                 )
             }
+            .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    menu
+                }
+            }
             .sheet(isPresented: $showingAddItem) {
                 NavigationStack {
                     ItemEntryScreen(repository: container.itemsRepository)
@@ -54,9 +63,20 @@ struct MainView: View {
                     ItemEditScreen(item: item, repository: container.itemsRepository)
                 }
             }
+            .sheet(isPresented: $showSettings) {
+                NavigationStack {
+                    SettingsScreen()
+                }
+            }
+            .sheet(isPresented: $showAbout) {
+                NavigationStack {
+                    // Show About Screen
+                }
+            }
         }
     }
     
+    // MARK: - iPad
     private var iPadLayout: some View {
         NavigationSplitView {
             NavigationStack {
@@ -68,6 +88,11 @@ struct MainView: View {
                         selectedItem = item
                     }
                 )
+                .toolbar {
+                    ToolbarItem(placement: .topBarLeading) {
+                        menu
+                    }
+                }
             }
         } detail: {
             if let selectedItem {
@@ -95,6 +120,36 @@ struct MainView: View {
                 ItemEditScreen(item: item, repository: container.itemsRepository)
             }
         }
+        .sheet(isPresented: $showSettings) {
+            NavigationStack {
+                SettingsScreen()
+            }
+        }
+        .sheet(isPresented: $showAbout) {
+            NavigationStack {
+                // Show AboutScreen
+            }
+        }
+    }
+    
+    // MARK: - Menu
+    private var menu: some View {
+        Menu {
+            Button {
+                showSettings = true
+            } label: {
+                Label("Settings", systemImage: "gear")
+            }
+            
+            Button {
+                showAbout = true
+            } label: {
+                Label("About", systemImage: "info.circle")
+            }
+        } label: {
+            Image(systemName: "ellipsis.circle")
+        }
+        .accessibilityLabel("More")
     }
 }
 
