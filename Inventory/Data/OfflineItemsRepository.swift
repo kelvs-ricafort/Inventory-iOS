@@ -6,37 +6,74 @@
 //
 
 import Foundation
+import SwiftData
 
+@MainActor
 final class OfflineItemsRepository: ItemsRepository {
-    private var items: [Item]
+    private let modelContext: ModelContext
     
-    init(items: [Item] = []) {
-        self.items = items
+    init(modelContext: ModelContext) {
+        self.modelContext = modelContext
     }
     
     func getAllItems() async -> [Item] {
-            items
+        do {
+            let descriptor = FetchDescriptor<Item>(
+                sortBy: [
+                    SortDescriptor(\.createdAt, order: .reverse)
+                ]
+            )
+            
+            return try modelContext.fetch(descriptor)
+        } catch {
+            print("Failed to fetch items: \(error)")
+            return []
+        }
     }
-
+    
     func getItem(id: Int) async -> Item? {
-        items.first { $0.id == id }
+        do {
+            let descriptor = FetchDescriptor<Item>(
+                predicate: #Predicate { item in
+                    item.id == id
+                }
+            )
+            
+            return try modelContext.fetch(descriptor).first
+        } catch {
+            print("Failed to fetch item: \(error)")
+            return nil
+        }
     }
-
+    
     func insertItem(_ item: Item) async {
-        items.append(item)
+        modelContext.insert(item)
+        save()
     }
-
+    
     func updateItem(_ item: Item) async {
-        guard let index = items.firstIndex(where: { $0.id == item.id }) else { return }
-
-        items[index] = item
+        save()
     }
-
+    
     func deleteItem(_ item: Item) async {
-        await deleteItem(id: item.id)
+        modelContext.delete(item)
+        save()
     }
-
+    
     func deleteItem(id: Int) async {
-        items.removeAll { $0.id == id }
+        guard let item = await getItem(id: id) else {
+            return
+        }
+        
+        modelContext.delete(item)
+        save()
+    }
+    
+    private func save() {
+        do {
+            try modelContext.save()
+        } catch {
+            print("Failed to save items: \(error)")
+        }
     }
 }

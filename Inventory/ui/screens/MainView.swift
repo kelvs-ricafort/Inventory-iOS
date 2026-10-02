@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct MainView: View {
     @Environment(\.horizontalSizeClass) var sizeClass
@@ -20,14 +21,13 @@ struct MainView: View {
         if sizeClass == .compact {
             iPhoneLayout
         } else {
-            // iPadLayout
+            iPadLayout
         }
     }
     
     private var iPhoneLayout: some View {
         NavigationStack {
             HomeScreen(
-                repository: container.itemsRepository,
                 onAddItem: {
                     showingAddItem = true
                 },
@@ -61,7 +61,6 @@ struct MainView: View {
         NavigationSplitView {
             NavigationStack {
                 HomeScreen(
-                    repository: container.itemsRepository,
                     onAddItem: {
                         showingAddItem = true
                     },
@@ -100,13 +99,27 @@ struct MainView: View {
 }
 
 #Preview("Main Screen - iPhone") {
-    MainView(
+    let container = AppDataContainer(inMemory: true)
+    let context = container.modelContainer.mainContext
+    
+    PreviewData.items.forEach { item in
+        context.insert(item)
+    }
+    
+    return MainView(
         container: AppDataContainer()
     )
 }
 
 #Preview("Main Screen - iPad") {
-    MainView(
+    let container = AppDataContainer(inMemory: true)
+    let context = container.modelContainer.mainContext
+    
+    PreviewData.items.forEach { item in
+        context.insert(item)
+    }
+    
+    return MainView(
         container: AppDataContainer()
     )
 }

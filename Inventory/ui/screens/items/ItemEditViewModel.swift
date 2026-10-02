@@ -9,11 +9,12 @@ import Foundation
 import Observation
 
 @Observable
+@MainActor
 final class ItemEditViewModel {
     
     private let repository: ItemsRepository
     
-    let itemID: Int
+    let item: Item
     
     var name: String
     var price: String
@@ -23,33 +24,30 @@ final class ItemEditViewModel {
         item: Item,
         repository: ItemsRepository
     ) {
+        self.item = item
         self.repository = repository
-        self.itemID = item.id
+
         self.name = item.name
         self.price = String(item.price)
         self.quantity = String(item.quantity)
     }
     
     var isValid: Bool {
-        !name.trimmingCharacters(in: .whitespaces).isEmpty &&
-        Double(price) != nil &&
-        Int(quantity) != nil
+        guard !name.trimmingCharacters(in: .whitespaces).isEmpty else { return false }
+        guard let price = Double(price), price >= 0 else { return false }
+        guard let quantity = Int(quantity), quantity >= 0 else { return false }
+        
+        return true
     }
     
     func save() async {
         guard
             let price = Double(price),
-            let quantity = Int(quantity)
-                else {
-            return
-        }
+            let quantity = Int(quantity) else { return }
         
-        let item = Item(
-            id: itemID,
-            name: name,
-            price: price,
-            quantity: quantity
-        )
+        item.name = name
+        item.price = price
+        item.quantity = quantity
         
         await repository.updateItem(item)
     }

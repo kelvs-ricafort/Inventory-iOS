@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct ItemEntryScreen: View {
     @Environment(\.dismiss) private var dismiss
@@ -42,7 +43,11 @@ struct ItemEntryScreen: View {
 }
 
 #Preview {
-    ItemEntryScreen(
-        repository: OfflineItemsRepository()
-    )
+    let container = AppDataContainer(inMemory: true)
+    
+    return NavigationStack {
+        ItemEntryScreen(
+            repository: container.itemsRepository
+        )
+    }
 }

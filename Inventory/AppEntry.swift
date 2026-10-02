@@ -6,18 +6,16 @@
 //
 
 import SwiftUI
+import SwiftData
 
 @main
 struct AppEntry: App {
-    private let container: AppContainer
-    
-    init() {
-        container = AppDataContainer()
-    }
+    private let container = AppDataContainer()
     
     var body: some Scene {
         WindowGroup {
             MainView(container: container)
         }
+        .modelContainer(container.modelContainer)
     }
 }

@@ -9,11 +9,12 @@ import Foundation
 import Observation
 
 @Observable
+@MainActor
 final class ItemDetailsViewModel {
 
     private let repository: ItemsRepository
 
-    var item: Item
+    let item: Item
 
     init(
         item: Item,

@@ -7,6 +7,7 @@
 
 import Foundation
 
+@MainActor
 protocol ItemsRepository {
     func getAllItems() async -> [Item]
     func getItem(id: Int) async -> Item?

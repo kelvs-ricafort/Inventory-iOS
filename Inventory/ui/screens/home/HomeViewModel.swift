@@ -13,6 +13,7 @@ final class HomeViewModel {
     private let repository: ItemsRepository
     
     private(set) var items: [Item] = []
+    private(set) var refreshId = UUID()
     
     init(repository: ItemsRepository) {
         self.repository = repository
@@ -20,5 +21,6 @@ final class HomeViewModel {
     
     func loadItems() async {
         items = await repository.getAllItems()
+        refreshId = UUID()
     }
 }

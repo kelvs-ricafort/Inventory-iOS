@@ -9,11 +9,13 @@ import Foundation
 
 enum PreviewData {
     static let items: [Item] = [
-        Item(id: 1, name: "Game", price: 100.0, quantity: 20),
-        Item(id: 2, name: "Pen", price: 200.0, quantity: 30),
-        Item(id: 3, name: "TV", price: 300.0, quantity: 50)
+        Item(id: 1, name: "Game", price: 100.00, quantity: 20),
+        Item(id: 2, name: "Pen", price: 200.00, quantity: 30),
+        Item(id: 3, name: "TV", price: 300.00, quantity: 50)
     ]
-    static let item = items[0]
+    static var item: Item {
+        Item(id: 1, name: "Game", price: 100.0, quantity: 20)
+    }
     
-    static let emptyItems: [Item] = []
+    static var emptyItems: [Item] = []
 }

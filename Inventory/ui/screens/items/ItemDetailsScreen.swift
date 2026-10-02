@@ -6,15 +6,15 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct ItemDetailsScreen: View {
     @Environment(\.dismiss) private var dismiss
     
     @State private var viewModel: ItemDetailsViewModel
+    @State private var showingDeleteConfirmation = false
     
     let onEdit: (Item) -> Void
-    
-    @State private var showingDeleteConfirmation = false
     
     init(
         item: Item,
@@ -111,9 +111,18 @@ struct ItemDetailsScreen: View {
 }
 
 #Preview {
-    NavigationStack {
+    let container = AppDataContainer(inMemory: true)
+    let context = container.modelContainer.mainContext
+   
+    let item = PreviewData.item
+    
+    context.insert(item)
+    
+    return NavigationStack {
         ItemDetailsScreen(
-            item: PreviewData.item, repository: OfflineItemsRepository(items: PreviewData.items), onEdit: { _ in }
+            item: item,
+            repository: container.itemsRepository,
+            onEdit: { _ in }
         )
     }
 }

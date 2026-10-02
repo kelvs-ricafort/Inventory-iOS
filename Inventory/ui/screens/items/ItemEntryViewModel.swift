@@ -9,6 +9,7 @@ import Foundation
 import Observation
 
 @Observable
+@MainActor
 final class ItemEntryViewModel {
     
     var name = ""
@@ -23,16 +24,16 @@ final class ItemEntryViewModel {
 
     var isValid: Bool {
         guard !name.trimmingCharacters(in: .whitespaces).isEmpty else { return false }
-        guard Double(price) != nil else { return false }
-        guard Int(quantity) != nil else { return false }
+        guard let price = Double(price), price >= 0 else { return false }
+        guard let quantity = Int(quantity), quantity >= 0 else { return false }
 
         return true
     }
 
     func save() async {
         guard let price = Double(price), let quantity = Int(quantity) else { return }
+        
         let existingItems = await repository.getAllItems()
-
         let nextID = (existingItems.map(\.id).max() ?? 0) + 1
 
         let item = Item(

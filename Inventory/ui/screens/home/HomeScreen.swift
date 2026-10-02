@@ -6,32 +6,28 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct HomeScreen: View {
-    @State var viewModel: HomeViewModel
+    @Query(
+        sort: \Item.id,
+        order: .reverse
+    )
+    private var items: [Item]
+    
     let onAddItem: () -> Void
     let onSelectItem: (Item) -> Void
     
-    init(
-        repository: ItemsRepository,
-        onAddItem: @escaping () -> Void,
-        onSelectItem: @escaping (Item) -> Void
-    ) {
-        _viewModel = State(initialValue: HomeViewModel(repository: repository))
-        self.onAddItem = onAddItem
-        self.onSelectItem = onSelectItem
-    }
-    
     var body: some View {
         Group {
-            if viewModel.items.isEmpty {
+            if items.isEmpty {
                 ContentUnavailableView(
                     "No Items",
                     systemImage: "shippingbox",
                     description: Text("No items are currently in the inventory.")
                 )
             } else {
-                List(viewModel.items) { item in
+                List(items) { item in
                     Button {
                         onSelectItem(item)
                     } label: {
@@ -51,29 +47,36 @@ struct HomeScreen: View {
                 .accessibilityLabel("Add Item")
             }
         }
-        .task {
-            await viewModel.loadItems()
-        }
     }
 }
 
 #Preview("Home - Items") {
-    NavigationStack {
-        HomeScreen(
-            repository: OfflineItemsRepository(items: PreviewData.items),
-            onAddItem: {}, onSelectItem: { _ in }
-        )
-    }
+    HomeScreenPreview(hasItems: true)
 }
 
 #Preview("Home - Empty") {
-    NavigationStack {
-        HomeScreen(
-            repository: OfflineItemsRepository(),
-            onAddItem: {},
-            onSelectItem: { _ in }
-        )
-    }
+    HomeScreenPreview(hasItems: false)
 }
 
-
+@MainActor
+private struct HomeScreenPreview: View {
+    private let container: AppDataContainer
+    
+    init(hasItems: Bool) {
+        container = AppDataContainer(inMemory: true)
+        
+        if hasItems {
+            PreviewData.items.forEach(container.modelContainer.mainContext.insert)
+        }
+    }
+    
+    var body: some View {
+        NavigationStack {
+            HomeScreen(
+                onAddItem: {},
+                onSelectItem: { _ in }
+            )
+        }
+        .modelContainer(container.modelContainer)
+    }
+}
