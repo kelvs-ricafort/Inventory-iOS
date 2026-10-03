@@ -71,6 +71,7 @@ struct MainView: View {
             .sheet(isPresented: $showAbout) {
                 NavigationStack {
                     // Show About Screen
+                    AboutScreen()
                 }
             }
         }
@@ -128,6 +129,7 @@ struct MainView: View {
         .sheet(isPresented: $showAbout) {
             NavigationStack {
                 // Show AboutScreen
+                AboutScreen()
             }
         }
     }
