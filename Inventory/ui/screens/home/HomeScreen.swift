@@ -50,14 +50,6 @@ struct HomeScreen: View {
     }
 }
 
-#Preview("Home - Items") {
-    HomeScreenPreview(hasItems: true)
-}
-
-#Preview("Home - Empty") {
-    HomeScreenPreview(hasItems: false)
-}
-
 @MainActor
 private struct HomeScreenPreview: View {
     private let container: AppDataContainer
@@ -79,4 +71,12 @@ private struct HomeScreenPreview: View {
         }
         .modelContainer(container.modelContainer)
     }
+}
+
+#Preview("Home - Items") {
+    HomeScreenPreview(hasItems: true)
+}
+
+#Preview("Home - Empty") {
+    HomeScreenPreview(hasItems: false)
 }

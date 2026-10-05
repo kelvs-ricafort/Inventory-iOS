@@ -42,7 +42,7 @@ struct ItemEntryScreen: View {
     }
 }
 
-#Preview {
+#Preview("Add Item") {
     let container = AppDataContainer(inMemory: true)
     
     return NavigationStack {

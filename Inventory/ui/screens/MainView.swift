@@ -149,7 +149,7 @@ struct MainView: View {
                 Label("About", systemImage: "info.circle")
             }
         } label: {
-            Image(systemName: "ellipsis.circle")
+            Image(systemName: "line.3.horizontal")
         }
         .accessibilityLabel("More")
     }

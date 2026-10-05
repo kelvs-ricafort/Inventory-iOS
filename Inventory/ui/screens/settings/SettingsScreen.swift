@@ -14,27 +14,21 @@ struct SettingsScreen: View {
         @Bindable var settings = settings
         
         Form {
-            Section {
+            Section("Language") {
                 Picker("Language", selection: $settings.language) {
                     ForEach(AppLanguage.allCases) { language in
-                        HStack {
-                            Text(language.flag)
-                            Text(language.displayName)
-                        }
-                        .tag(language)
+                        Text("\(language.flag) \(language.displayName)")
+                            .tag(language)
                     }
                 }
-            } header: {
-                Text("Language")
             }
             
-            Section {
+            Section("Appearance") {
                 Toggle("Dark Mode", isOn: $settings.darkMode)
-            } header: {
-                Text("Appearance")
             }
         }
         .navigationTitle("Settings")
+        .navigationBarTitleDisplayMode(.inline)
     }
 }
 

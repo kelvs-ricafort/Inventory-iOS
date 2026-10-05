@@ -56,16 +56,14 @@ struct ItemEditScreen: View {
         .navigationBarTitleDisplayMode(.inline)
     }
 }
-
-#Preview {
+#Preview("Edit Item") {
     let container = AppDataContainer(inMemory: true)
-    let context = container.modelContainer.mainContext
-    
-    let item = PreviewData.item
-    
-    context.insert(item)
-    
+
     return NavigationStack {
-        ItemEditScreen(item: item, repository: container.itemsRepository)
+        ItemEditScreen(
+            item: PreviewData.item,
+            repository: container.itemsRepository
+        )
     }
 }
+

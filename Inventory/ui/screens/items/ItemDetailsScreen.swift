@@ -112,12 +112,10 @@ struct ItemDetailsScreen: View {
 
 #Preview {
     let container = AppDataContainer(inMemory: true)
-    let context = container.modelContainer.mainContext
-   
     let item = PreviewData.item
-    
-    context.insert(item)
-    
+
+    container.modelContainer.mainContext.insert(item)
+
     return NavigationStack {
         ItemDetailsScreen(
             item: item,
@@ -125,4 +123,6 @@ struct ItemDetailsScreen: View {
             onEdit: { _ in }
         )
     }
+    .modelContainer(container.modelContainer)
 }
+
